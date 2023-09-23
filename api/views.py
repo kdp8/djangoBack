@@ -1,7 +1,8 @@
-from django.http import JsonResponse
-from django.shortcuts import render
+from rest_framework.generics import ListAPIView
+from .models import Actor
+from .serializers import ActorSerializer
 
-# Create your views here.
+class ActorListAPIView(ListAPIView):
+    queryset = Actor.objects.all()
+    serializer_class = ActorSerializer
 
-def hello_world(request):
-    return JsonResponse({"message": "Hello, World!"})
