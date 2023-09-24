@@ -1,8 +1,12 @@
 from rest_framework.generics import ListAPIView
-from .models import Actor
-from .serializers import ActorSerializer
+from .models import Film
+from .serializers import TopRentedMoviesSerializer
+from django.db.models import Count
 
-class ActorListAPIView(ListAPIView):
-    queryset = Actor.objects.all()
-    serializer_class = ActorSerializer
+class TopRentedMoviesAPIView(ListAPIView):
+    serializer_class = TopRentedMoviesSerializer
+    def get_queryset(self):
+        queryset = Film.objects.annotate(rented=Count('inventory__rental')) \
+            .order_by('-rented')[:5]
+        return queryset
 

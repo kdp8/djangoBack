@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import Actor
+from .models import Film
 
-class ActorSerializer(serializers.ModelSerializer):
+class TopRentedMoviesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Actor
-        fields = '__all__'
+        model = Film 
+        fields = '__all__' 
