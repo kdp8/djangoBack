@@ -1,7 +1,8 @@
 from rest_framework.generics import ListAPIView
+from rest_framework import generics, filters
 from .models import Actor, Film
-from .serializers import TopRentedMoviesSerializer, TopActorsSerializer
 from django.db.models import Count
+from .serializers import TopRentedMoviesSerializer, TopActorsSerializer, FilmSerializer
 
 class TopRentedMoviesAPIView(ListAPIView):
     serializer_class = TopRentedMoviesSerializer
@@ -26,4 +27,14 @@ class TopRentedMoviesForActorAPIView(ListAPIView):
         queryset = Film.objects.filter(filmactor__actor_id=actor_id) \
             .annotate(rented=Count('inventory__rental')) \
             .order_by('-rented')[:5]
+        return queryset
+
+class FilmSearchAPIView(generics.ListAPIView):
+    queryset = Film.objects.all()
+    serializer_class = FilmSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'filmactor__actor__first_name', 'filmactor__actor__last_name', 'filmcategory__category__name']
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
         return queryset

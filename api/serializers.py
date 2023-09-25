@@ -11,3 +11,8 @@ class TopActorsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Actor
         fields = ('actor_id', 'first_name', 'last_name', 'film_count')
+
+class FilmSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Film
+        fields = '__all__'
