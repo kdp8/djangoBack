@@ -13,6 +13,7 @@ class Actor(models.Model):
     first_name = models.CharField(max_length=45)
     last_name = models.CharField(max_length=45)
     last_update = models.DateTimeField()
+    films = models.ManyToManyField('Film', through='FilmActor')
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
     class Meta:
@@ -41,6 +42,7 @@ class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=25)
     last_update = models.DateTimeField()
+    films = models.ManyToManyField('Film', through='FilmCategory')
     def __str__(self):
         return str(self.name)
     class Meta:
@@ -102,6 +104,8 @@ class Film(models.Model):
     rating = models.CharField(max_length=5, blank=True, null=True)
     special_features = models.CharField(max_length=54, blank=True, null=True)
     last_update = models.DateTimeField()
+    categories = models.ManyToManyField(Category, through='FilmCategory')
+    actors = models.ManyToManyField(Actor, through='FilmActor')
     def __str__(self):
         return str(self.title)
     class Meta:
