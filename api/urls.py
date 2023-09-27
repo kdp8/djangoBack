@@ -7,4 +7,6 @@ urlpatterns = [
     path('top-actors/<int:actor_id>/top-rented-movies/', views.TopRentedMoviesForActorAPIView.as_view(), name='top-rented-movies-for-actor'),
     path('film-search/', views.FilmSearchAPIView.as_view(), name='film-search'),
     path('customers/', views.CustomerListView.as_view(), name='customer-list'),
+    path('customers/<int:pk>/update/', views.CustomerUpdateAPIView.as_view(), name='customer-update'),
+    path('customers/<int:pk>/delete/', views.CustomerDeleteAPIView.as_view(), name='customer-delete'),
 ]

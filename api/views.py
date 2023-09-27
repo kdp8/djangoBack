@@ -1,5 +1,5 @@
 from rest_framework.generics import ListAPIView
-from rest_framework import generics, filters
+from rest_framework import generics, filters, serializers
 from .models import Actor, Film, Customer
 from django.db.models import Count
 from .serializers import TopRentedMoviesSerializer, TopActorsSerializer, FilmSerializer, CustomerSerializer
@@ -44,3 +44,16 @@ class CustomerListView(generics.ListAPIView):
     serializer_class = CustomerSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['customer_id', 'first_name', 'last_name']
+
+class CustomerUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = ('first_name', 'last_name', 'email')
+
+class CustomerUpdateAPIView(generics.UpdateAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerUpdateSerializer
+
+class CustomerDeleteAPIView(generics.DestroyAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
