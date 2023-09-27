@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Film, Actor
+from .models import Film, Actor, Customer
 
 class TopRentedMoviesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,4 +15,9 @@ class TopActorsSerializer(serializers.ModelSerializer):
 class FilmSerializer(serializers.ModelSerializer):
     class Meta:
         model = Film
+        fields = '__all__'
+
+class CustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
         fields = '__all__'

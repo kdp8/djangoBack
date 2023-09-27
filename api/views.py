@@ -1,8 +1,8 @@
 from rest_framework.generics import ListAPIView
 from rest_framework import generics, filters
-from .models import Actor, Film
+from .models import Actor, Film, Customer
 from django.db.models import Count
-from .serializers import TopRentedMoviesSerializer, TopActorsSerializer, FilmSerializer
+from .serializers import TopRentedMoviesSerializer, TopActorsSerializer, FilmSerializer, CustomerSerializer
 
 class TopRentedMoviesAPIView(ListAPIView):
     serializer_class = TopRentedMoviesSerializer
@@ -38,3 +38,9 @@ class FilmSearchAPIView(generics.ListAPIView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset
+    
+class CustomerListView(generics.ListAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['customer_id', 'first_name', 'last_name']
