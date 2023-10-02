@@ -57,3 +57,13 @@ class CustomerUpdateAPIView(generics.UpdateAPIView):
 class CustomerDeleteAPIView(generics.DestroyAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
+
+class CustomerCreateView(generics.CreateAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+
+class CustomerListView(generics.ListCreateAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['customer_id', 'first_name', 'last_name']

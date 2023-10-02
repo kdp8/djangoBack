@@ -21,3 +21,11 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = '__all__'
+
+class CustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = '__all__'
+        extra_kwargs = {
+            'customer_id': {'read_only': True},
+        }
