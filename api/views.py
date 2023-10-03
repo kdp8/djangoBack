@@ -4,7 +4,7 @@ from .models import Actor, Film, Customer, Rental
 from django.db.models import Count
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import TopRentedMoviesSerializer, TopActorsSerializer, FilmSerializer, CustomerSerializer
+from .serializers import CustomerWithRentedMoviesSerializer, TopRentedMoviesSerializer, TopActorsSerializer, FilmSerializer, CustomerSerializer
 
 class TopRentedMoviesAPIView(ListAPIView):
     serializer_class = TopRentedMoviesSerializer
@@ -90,3 +90,7 @@ class CustomerRentedMoviesAPIView(APIView):
             })
 
         return Response({"customer": customer.first_name, "rented_movies": rented_movies})
+
+class CustomerWithRentedMoviesAPIView(ListAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerWithRentedMoviesSerializer

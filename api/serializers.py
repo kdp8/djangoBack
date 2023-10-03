@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Film, Actor, Customer
+from .models import Film, Actor, Customer, Rental
 
 class TopRentedMoviesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,3 +29,14 @@ class CustomerSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'customer_id': {'read_only': True},
         }
+
+class RentalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rental
+        fields = ('inventory_id', 'rental_date', 'return_date')
+
+class CustomerWithRentedMoviesSerializer(serializers.ModelSerializer):
+    rented_movies = RentalSerializer(many=True, source='rental_set')
+    class Meta:
+        model = Customer
+        fields = ('customer_id', 'first_name', 'last_name', 'rented_movies')
