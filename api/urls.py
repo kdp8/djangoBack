@@ -10,4 +10,5 @@ urlpatterns = [
     path('customers/', views.CustomerListView.as_view(), name='customer-list'),
     path('customers/<int:pk>/update/', views.CustomerUpdateAPIView.as_view(), name='customer-update'),
     path('customers/<int:pk>/delete/', views.CustomerDeleteAPIView.as_view(), name='customer-delete'),
+    path('customers/<int:customer_id>/rented-movies/', views.CustomerRentedMoviesAPIView.as_view(), name='customer-rented-movies'),
 ]

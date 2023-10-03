@@ -1,7 +1,9 @@
 from rest_framework.generics import ListAPIView
 from rest_framework import generics, filters, serializers
-from .models import Actor, Film, Customer
+from .models import Actor, Film, Customer, Rental
 from django.db.models import Count
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from .serializers import TopRentedMoviesSerializer, TopActorsSerializer, FilmSerializer, CustomerSerializer
 
 class TopRentedMoviesAPIView(ListAPIView):
@@ -67,3 +69,24 @@ class CustomerListView(generics.ListCreateAPIView):
     serializer_class = CustomerSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['customer_id', 'first_name', 'last_name']
+
+class CustomerRentedMoviesAPIView(APIView):
+    
+    def get(self, request, customer_id):
+        try:
+            customer = Customer.objects.get(customer_id=customer_id)
+        except Customer.DoesNotExist:
+            return Response({"message": "Customer not found"}, status=404)
+
+        rentals = Rental.objects.filter(customer=customer)
+        rented_movies = []
+        for rental in rentals:
+            inventory = rental.inventory
+            film = inventory.film
+            rented_movies.append({
+                "film_title": film.title,
+                "rental_date": rental.rental_date,
+                "return_date": rental.return_date,
+            })
+
+        return Response({"customer": customer.first_name, "rented_movies": rented_movies})
