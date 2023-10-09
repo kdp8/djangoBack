@@ -50,7 +50,7 @@ class CustomerListView(generics.ListAPIView):
 class CustomerUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
-        fields = ('first_name', 'last_name', 'email')
+        fields = ('first_name', 'last_name', 'email', 'address', 'active', 'last_update')
 
 class CustomerUpdateAPIView(generics.UpdateAPIView):
     queryset = Customer.objects.all()

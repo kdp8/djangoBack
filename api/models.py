@@ -5,6 +5,7 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+from django.utils import timezone
 from django.db import models
 
 
@@ -12,12 +13,12 @@ class Actor(models.Model):
     actor_id = models.SmallAutoField(primary_key=True)
     first_name = models.CharField(max_length=45)
     last_name = models.CharField(max_length=45)
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(default=timezone.now)
     films = models.ManyToManyField('Film', through='FilmActor')
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'actor'
 
 
@@ -30,23 +31,23 @@ class Address(models.Model):
     postal_code = models.CharField(max_length=10, blank=True, null=True)
     phone = models.CharField(max_length=20)
     location = models.TextField()  # This field type is a guess.
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return f"{self.address} {self.address2}, phone: {self.phone}"
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'address'
 
 
 class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=25)
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(default=timezone.now)
     films = models.ManyToManyField('Film', through='FilmCategory')
     def __str__(self):
         return str(self.name)
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'category'
 
 
@@ -54,22 +55,22 @@ class City(models.Model):
     city_id = models.SmallAutoField(primary_key=True)
     city = models.CharField(max_length=50)
     country = models.ForeignKey('Country', models.DO_NOTHING)
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return f"{self.city}, {self.country}"
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'city'
 
 
 class Country(models.Model):
     country_id = models.SmallAutoField(primary_key=True)
     country = models.CharField(max_length=50)
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return f"{self.country}"
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'country'
 
 
@@ -82,11 +83,11 @@ class Customer(models.Model):
     address = models.ForeignKey(Address, models.DO_NOTHING)
     active = models.IntegerField()
     create_date = models.DateTimeField()
-    last_update = models.DateTimeField(blank=True, null=True)
+    last_update = models.DateTimeField(default=timezone.now, blank=True, null=True)
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'customer'
 
 
@@ -103,24 +104,24 @@ class Film(models.Model):
     replacement_cost = models.DecimalField(max_digits=5, decimal_places=2)
     rating = models.CharField(max_length=5, blank=True, null=True)
     special_features = models.CharField(max_length=54, blank=True, null=True)
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(default=timezone.now)
     categories = models.ManyToManyField(Category, through='FilmCategory')
     actors = models.ManyToManyField(Actor, through='FilmActor')
     def __str__(self):
         return str(self.title)
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'film'
 
 
 class FilmActor(models.Model):
     actor = models.OneToOneField(Actor, models.DO_NOTHING, primary_key=True)  # The composite primary key (actor_id, film_id) found, that is not supported. The first column is selected.
     film = models.ForeignKey(Film, models.DO_NOTHING)
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return f"{self.actor} ({self.film})"
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'film_actor'
         unique_together = (('actor', 'film'),)
 
@@ -128,11 +129,11 @@ class FilmActor(models.Model):
 class FilmCategory(models.Model):
     film = models.OneToOneField(Film, models.DO_NOTHING, primary_key=True)  # The composite primary key (film_id, category_id) found, that is not supported. The first column is selected.
     category = models.ForeignKey(Category, models.DO_NOTHING)
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return f"{self.film} ({self.category})"
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'film_category'
         unique_together = (('film', 'category'),)
 
@@ -144,7 +145,7 @@ class FilmText(models.Model):
     def __str__(self):
         return f"{self.film_id} ({self.title})"
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'film_text'
 
 
@@ -152,22 +153,22 @@ class Inventory(models.Model):
     inventory_id = models.AutoField(primary_key=True)
     film = models.ForeignKey(Film, models.DO_NOTHING)
     store = models.ForeignKey('Store', models.DO_NOTHING)
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return f"No.{self.inventory_id}"
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'inventory'
 
 
 class Language(models.Model):
     language_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=20)
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return str(self.name)
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'language'
 
 
@@ -178,11 +179,11 @@ class Payment(models.Model):
     rental = models.ForeignKey('Rental', models.DO_NOTHING, blank=True, null=True)
     amount = models.DecimalField(max_digits=5, decimal_places=2)
     payment_date = models.DateTimeField()
-    last_update = models.DateTimeField(blank=True, null=True)
+    last_update = models.DateTimeField(default=timezone.now, blank=True, null=True)
     def __str__(self):
         return f"{self.payment_id}"
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'payment'
 
 
@@ -193,11 +194,11 @@ class Rental(models.Model):
     customer = models.ForeignKey(Customer, models.DO_NOTHING)
     return_date = models.DateTimeField(blank=True, null=True)
     staff = models.ForeignKey('Staff', models.DO_NOTHING)
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return f"No.{self.rental_id}"
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'rental'
         unique_together = (('rental_date', 'inventory', 'customer'),)
 
@@ -213,11 +214,11 @@ class Staff(models.Model):
     active = models.IntegerField()
     username = models.CharField(max_length=16)
     password = models.CharField(max_length=40, db_collation='utf8mb4_bin', blank=True, null=True)
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.username})"
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'staff'
 
 
@@ -225,9 +226,9 @@ class Store(models.Model):
     store_id = models.AutoField(primary_key=True)
     manager_staff = models.OneToOneField(Staff, models.DO_NOTHING, related_name='store_manager')
     address = models.ForeignKey(Address, models.DO_NOTHING)
-    last_update = models.DateTimeField()
+    last_update = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return f"No.{self.store_id}"
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'store'
