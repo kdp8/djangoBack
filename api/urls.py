@@ -13,4 +13,5 @@ urlpatterns = [
     path('customers/<int:customer_id>/rented-movies/', views.CustomerRentedMoviesAPIView.as_view(), name='customer-rented-movies'),
     path('customer-rented-movies/', views.CustomerWithRentedMoviesAPIView.as_view(), name='customer-rented-movies'),
     path('rental/create/', views.RentalCreateView.as_view(), name='rental-create'),
+    path('rental/<int:pk>/return/', views.ReturnMovieView.as_view(), name='return-movie'),
 ]

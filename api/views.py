@@ -1,5 +1,6 @@
+from datetime import datetime
 from django.db import connection
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, UpdateAPIView
 from rest_framework import generics, filters, serializers, status
 from .models import Actor, Film, Customer, Rental
 from django.db.models import Count
@@ -85,6 +86,7 @@ class CustomerRentedMoviesAPIView(APIView):
             inventory = rental.inventory
             film = inventory.film
             rented_movies.append({
+                "rental_id": rental.rental_id,
                 "film_title": film.title,
                 "rental_date": rental.rental_date,
                 "return_date": rental.return_date,
@@ -113,3 +115,20 @@ class RentalCreateView(APIView):
             return Response({'message': 'Rental created successfully'}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ReturnMovieView(UpdateAPIView):
+    queryset = Rental.objects.all()
+    serializer_class = RentalSerializer
+
+    def update(self, request, *args, **kwargs):
+        rental_id = kwargs['pk']
+        try:
+            rental = Rental.objects.get(rental_id=rental_id)
+        except Rental.DoesNotExist:
+            return Response({"message": "Rental not found"}, status=404)
+
+        rental.return_date = datetime.now() 
+        rental.save()
+
+        serializer = self.get_serializer(rental)
+        return Response(serializer.data, status=status.HTTP_200_OK)
