@@ -40,3 +40,12 @@ class CustomerWithRentedMoviesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = ('customer_id', 'first_name', 'last_name', 'rented_movies')
+
+class RentalSerializer(serializers.Serializer):
+    rental_date = serializers.DateTimeField()
+    return_date = serializers.DateTimeField(allow_null=True, required=False)
+    inventory_id = serializers.IntegerField()
+    customer_id = serializers.IntegerField()
+    staff_id = serializers.IntegerField()
+    rental_id = serializers.IntegerField(allow_null=True, required=False)
+    last_update = serializers.DateTimeField()

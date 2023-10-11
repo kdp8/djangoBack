@@ -1,10 +1,11 @@
+from django.db import connection
 from rest_framework.generics import ListAPIView
-from rest_framework import generics, filters, serializers
+from rest_framework import generics, filters, serializers, status
 from .models import Actor, Film, Customer, Rental
 from django.db.models import Count
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import CustomerWithRentedMoviesSerializer, TopRentedMoviesSerializer, TopActorsSerializer, FilmSerializer, CustomerSerializer
+from .serializers import CustomerWithRentedMoviesSerializer, RentalSerializer, TopRentedMoviesSerializer, TopActorsSerializer, FilmSerializer, CustomerSerializer
 
 class TopRentedMoviesAPIView(ListAPIView):
     serializer_class = TopRentedMoviesSerializer
@@ -94,3 +95,21 @@ class CustomerRentedMoviesAPIView(APIView):
 class CustomerWithRentedMoviesAPIView(ListAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerWithRentedMoviesSerializer
+
+class RentalCreateView(APIView):
+    def post(self, request):
+        serializer = RentalSerializer(data=request.data)
+
+        if serializer.is_valid():
+            rental_data = serializer.validated_data
+            with connection.cursor() as cursor:
+                cursor.execute('''
+                    INSERT INTO rental (rental_date, return_date, inventory_id, customer_id, staff_id, rental_id, last_update)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s);
+                ''', [rental_data['rental_date'], rental_data['return_date'], rental_data['inventory_id'],
+                      rental_data['customer_id'], rental_data['staff_id'], rental_data['rental_id'],
+                      rental_data['last_update']])
+
+            return Response({'message': 'Rental created successfully'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
